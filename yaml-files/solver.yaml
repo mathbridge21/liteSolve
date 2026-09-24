@@ -1,0 +1,187 @@
+0:
+  p:
+    dimensions:
+      length: 2
+      time: -2
+    internalField: 601.2024048096192
+    boundaryField:
+      inlet_1:
+        type: zeroGradient
+      inlet_2:
+        type: zeroGradient
+      outlet:
+        type: totalPressure
+        p0:
+        - uniform
+        - 601.2024048096192
+        value: $internalField
+      wall:
+        type: zeroGradient
+  U:
+    dimensions:
+      length: 1
+      time: -1
+    internalField:
+    - 0
+    - 0
+    - 0
+    boundaryField:
+      inlet_1:
+        type: flowRateInletVelocity
+        volumetricFlowRate: 1.0000000000000001e-11
+        value: $internalField
+      inlet_2:
+        type: flowRateInletVelocity
+        volumetricFlowRate: 1.0000000000000001e-11
+        value: $internalField
+      outlet:
+        type: pressureInletOutletVelocity
+        value: $internalField
+      wall:
+        type: movingWallVelocity
+        value:
+        - 0
+        - 0
+        - 0
+constant:
+  momentumTransport:
+    '#include': '"turbulenceProperties"'
+  transportProperties:
+    transportModel: Newtonian
+    nu:
+      dimensions:
+        length: 2
+        time: -1
+      value: 100.20040080160321
+  turbulenceProperties:
+    simulationType: '"laminar"'
+system:
+  controlDict:
+    application: simpleFoam
+    startFrom: startTime
+    startTime: 0
+    stopAt: endTime
+    endTime: 2000
+    deltaT: 1
+    writeControl: timeStep
+    writeInterval: 100
+    purgeWrite: 0
+    writeFormat: ascii
+    writePrecision: 15
+    runTimeModifiable: true
+    libs: 
+    - '"potentialFoam"'
+    - '"turbulenceLib"'
+  alphaDivScheme:
+    div(phi,alpha): Gauss vanLeer
+  cAlpha:
+    cAlpha: 1
+  turbulenceLib: 
+    '"libmomentumTransportModels"': null
+  createPatchDict:
+    pointSync: false
+    patches:
+    - name: inlet_1
+      patchInfo:
+        type: patch
+      constructFrom: patches
+      patches:
+      - '"inlet_1"'
+    - name: inlet_2
+      patchInfo:
+        type: patch
+      constructFrom: patches
+      patches:
+      - '"inlet_2"'
+    - name: outlet
+      patchInfo:
+        type: patch
+      constructFrom: patches
+      patches:
+      - '"outlet"'
+    - name: wall
+      patchInfo:
+        type: wall
+      constructFrom: patches
+      patches:
+      - '"wall"'
+  decomposeParDict:
+    numberOfSubdomains: 6
+    method: scotch
+  fvSchemes:
+    ddtSchemes:
+      default: steadyState
+    divSchemes:
+      default: none
+      div(phi,U): bounded Gauss linearUpwindV grad(U)
+      div((nuEff*dev2(T(grad(U))))): Gauss linear
+      div(div(phi,U)): Gauss linear
+    gradSchemes:
+      default: cellLimited Gauss linear 0.95
+      grad(p): Gauss linear
+      grad(p_rgh): Gauss linear
+    laplacianSchemes:
+      default:  Gauss linear limited 0.3
+    interpolationSchemes:
+      default: linear
+    snGradSchemes:
+      default: limited 0.3
+    wallDist:
+      method: meshWave
+  fvSolution:
+    SIMPLE:
+      nNonOrthogonalCorrectors: 5
+      consistent: 'no'
+      residualControl:
+        '"(p|p_rgh)"': 0.001
+        U: 0.001
+        '"(k|epsilon|omega|f|v2|nuTilda|gammaInt|ReThetat)"': 0.001
+      pRefValue: 0
+      pRefCell: 0
+    potentialFlow:
+      nNonOrthogonalCorrectors: 8
+      PhiRefValue: 0
+      PhiRefCell: 0
+    solvers:
+      '"(p|p_rgh|pcorr)"':
+        solver: GAMG
+        tolerance: 1.0e-08
+        relTol: 0.01
+        smoother: symGaussSeidel
+        nPreSweeps: 0
+        nPostSweeps: 2
+        cacheAgglomeration: on
+        agglomerator: faceAreaPair
+        nCellsInCoarsestLevel: 10
+        mergeLevels: 1
+        maxIter: 20
+      '"(pFinal|p_rghFinal|pcorrFinal)"':
+        $p: null
+        relTol: 0
+      U:
+        solver: smoothSolver
+        smoother: symGaussSeidel
+        tolerance: 1.0e-08
+        relTol: 0.1
+        nSweeps: 1
+      UFinal:
+        $U: null
+        relTol: 0
+      Phi:
+        solver: GAMG
+        tolerance: 1.0e-07
+        relTol: 0.01
+        smoother: GaussSeidel
+        nPreSweeps: 0
+        nPostSweeps: 2
+        cacheAgglomeration: 'on'
+        agglomerator: faceAreaPair
+        nCellsInCoarsestLevel: 10
+        mergeLevels: 1
+    relaxationFactors:
+      equations:
+        U: 0.7
+      fields:
+        p: 0.3
+    cache:
+      grad(U): null

@@ -1,0 +1,258 @@
+system:
+  controlDict:
+    application: simpleFoam
+    startFrom: startTime
+    startTime: 0
+    stopAt: endTime
+    endTime: 1
+    deltaT: 1
+    writeControl: timeStep
+    writeInterval: 1
+    purgeWrite: 0
+    writeFormat: ascii
+    writePrecision: 15
+    runTimeModifiable: 'true'
+    libs:
+    - '"libdecompositionMethods.so"'
+    - '"libscotchDecomp.so"'
+  blockMeshDict:
+    cellsX: 37
+    cellsY: 36
+    cellsZ: 16
+    xMin: -0.0005000001000000035
+    xMax: 0.0380000001
+    yMin: -0.006500000100000001
+    yMax: 0.030500000100000004
+    zMin: -0.0005000000999999999
+    zMax: 0.01648125462773964
+    vertices:
+    - - $xMin
+      - $yMin
+      - $zMin
+    - - $xMax
+      - $yMin
+      - $zMin
+    - - $xMax
+      - $yMax
+      - $zMin
+    - - $xMin
+      - $yMax
+      - $zMin
+    - - $xMin
+      - $yMin
+      - $zMax
+    - - $xMax
+      - $yMin
+      - $zMax
+    - - $xMax
+      - $yMax
+      - $zMax
+    - - $xMin
+      - $yMax
+      - $zMax
+    blocks:
+    - hex
+    - - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+    - - $cellsX
+      - $cellsY
+      - $cellsZ
+    - simpleGrading
+    - - 1
+      - 1
+      - 1
+    boundary:
+    - xMin
+    - type: patch
+      faces:
+      - - 0
+        - 4
+        - 7
+        - 3
+    - xMax
+    - type: patch
+      faces:
+      - - 1
+        - 5
+        - 6
+        - 2
+    - yMin
+    - type: patch
+      faces:
+      - - 0
+        - 1
+        - 2
+        - 3
+    - yMax
+    - type: patch
+      faces:
+      - - 4
+        - 5
+        - 6
+        - 7
+    - zMin
+    - type: patch
+      faces:
+      - - 1
+        - 0
+        - 4
+        - 5
+    - zMax
+    - type: patch
+      faces:
+      - - 3
+        - 7
+        - 6
+        - 2
+  meshQualityDict:
+    maxNonOrtho: 90
+    maxBoundarySkewness: 100
+    maxInternalSkewness: 50
+    maxConcave: 90
+    minVol: 0
+    minTetQuality: -1.0e+30
+    minArea: 0
+    minTwist: -1
+    minDeterminant: 0
+    minFaceWeight: 0.001
+    minVolRatio: 0.0001
+    minTriangleTwist: -1
+  decomposeParDict:
+    numberOfSubdomains: 12
+    method: scotch
+  snappyHexMeshDict:
+    castellatedMesh: 'true'
+    snap: 'true'
+    addLayers: 'true'
+    geometry:
+      '"Extrude_Geometry.stl"':
+        type: triSurfaceMesh
+        name: Extrude_Geometry
+        file: '"Extrude_Geometry.stl"'
+        regions:
+          patch_1_1:
+            name: patch_1_1
+          patch_2_1:
+            name: patch_2_1
+          patch_3_1:
+            name: patch_3_1
+          patch_4_1:
+            name: patch_4_1
+      '"MeshRefinement.stl"':
+        type: triSurfaceMesh
+        name: MeshRefinement
+        file: '"MeshRefinement.stl"'
+    castellatedMeshControls:
+      maxLocalCells: 100000000
+      maxGlobalCells: 2000000000
+      minRefinementCells: 0
+      nCellsBetweenLevels: 3
+      maxLoadUnbalance: 0.2
+      features:
+      - file: '"Extrude_Geometry.eMesh"'
+        level: 0
+      - file: '"MeshRefinement.eMesh"'
+        level: 0
+      refinementSurfaces:
+        Extrude_Geometry:
+          level:
+          - 0
+          - 0
+        MeshRefinement:
+          level:
+          - 1
+          - 1
+          faceZone: MeshRefinement
+      resolveFeatureAngle: 30
+      locationInMesh:
+      - 0.0019660919403855907
+      - 0.02484403064599411
+      - 0.008696603683261812
+      allowFreeStandingZoneFaces: 'true'
+    snapControls:
+      nSmoothPatch: 3
+      tolerance: 1.0
+      nSolveIter: 100
+      nRelaxIter: 5
+      nFeatureSnapIter: 10
+      implicitFeatureSnap: 'false'
+      explicitFeatureSnap: 'true'
+    addLayersControls:
+      relativeSizes: 'true'
+      expansionRatio: 1.2
+      finalLayerThickness: 0.3
+      minThickness: 0.1
+      nGrow: 0
+      featureAngle: 120
+      nRelaxIter: 3
+      nSmoothSurfaceNormals: 1
+      nSmoothNormals: 3
+      nSmoothThickness: 10
+      maxFaceThicknessRatio: 0.5
+      maxThicknessToMedialRatio: 0.3
+      minMedialAxisAngle: 90
+      minMedianAxisAngle: 90
+      nBufferCellsNoExtrude: 0
+      nLayerIter: 50
+      layers:
+        '"patch_1_1"':
+          nSurfaceLayers: 1
+          expansionRatio: 1.2
+        '"patch_2_1"':
+          nSurfaceLayers: 1
+          expansionRatio: 1.2
+        '"patch_3_1"':
+          nSurfaceLayers: 1
+          expansionRatio: 1.2
+        '"patch_4_1"':
+          nSurfaceLayers: 1
+          expansionRatio: 1.2
+    meshQualityControls:
+      maxNonOrtho: 65
+      maxBoundarySkewness: 20
+      maxInternalSkewness: 4
+      maxConcave: 80
+      minVol: 1.0e-13
+      minTetQuality: -1
+      minArea: -1
+      minTwist: 0.01
+      minDeterminant: 0.001
+      minFaceWeight: 0.05
+      minVolRatio: 0.01
+      minTriangleTwist: -1
+      nSmoothScale: 4
+      errorReduction: 0.75
+      relaxed:
+        maxNonOrtho: 75
+    mergeTolerance: 1.0e-09
+  surfaceFeatureExtractDict:
+    Extrude_Geometry.stl:
+      extractionMethod: extractFromSurface
+      extractFromSurfaceCoeffs:
+        includedAngle: 150
+      writeObj: 'yes'
+    MeshRefinement.stl:
+      extractionMethod: extractFromSurface
+      extractFromSurfaceCoeffs:
+        includedAngle: 150
+      writeObj: 'yes'
+  surfaceFeaturesDict:
+    surfaces:
+    - '"Extrude_Geometry.stl"'
+    - '"MeshRefinement.stl"'
+    includedAngle: 150
+    geometricTestOnly: 'no'
+    subsetFeatures:
+      nonManifoldEdges: 'yes'
+      openEdges: 'yes'
+    trimFeatures:
+      minElem: 0
+      minLen: 0.0
+    writeObj: 'yes'
+    verboseObj: 'no'
