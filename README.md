@@ -1,5 +1,7 @@
 # liteSolve
 
+[![Watch the video](https://www.youtube.com/watch?v=pc7Hrb_lg8g&t=9s)](https://www.youtube.com/watch?v=pc7Hrb_lg8g&t=9s)
+
 liteSolve is a Python-based GUI wrapper for OpenFOAM, designed to simplify the process of setting up, running, and visualizing CFD cases. It provides an intuitive interface for geometry processing, case configuration via YAML, and execution management.
 
 ## 🚀 Features
